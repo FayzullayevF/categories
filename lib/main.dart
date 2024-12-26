@@ -1,5 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lesson103/utils/constants.dart';
+import 'package:lesson103/presentation/AppBarActions.dart';
+import 'package:lesson103/presentation/AppBarTitle.dart';
+import 'package:lesson103/presentation/ScaffoldPart.dart';
+
+final GoRouter router = GoRouter(routes: [
+  GoRoute(path: '/', builder: (context, state) => CategoryPage()),
+  GoRoute(path: '/page2', builder: (context, state) => HomePage())
+]);
 
 void main() => runApp(const RecipeApp());
 
@@ -8,9 +18,8 @@ class RecipeApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: CategoryPage()
+    return MaterialApp.router(
+      routerConfig: router,
     );
   }
 }
@@ -31,39 +40,41 @@ class CategoryPage extends StatelessWidget {
             child: SizedBox(
                 width: 21,
                 height: 14,
-                child: SvgPicture.asset("assets/icons/back-arrow.svg",
-                  fit: BoxFit.cover,)
-            ),
+                child: SvgPicture.asset(
+                  "assets/icons/arrow.svg",
+                  fit: BoxFit.cover,
+                )),
           ),
         ),
-        title: const Text("Categories", style: TextStyle(
-          color: Color(0xFFFD5D69),
-          fontWeight: FontWeight.bold
-        ),
+        title: const Text(
+          "Categories",
+          style: TextStyle(color: Color(0xFFFD5D69), fontWeight: FontWeight.bold),
         ),
         actions: const [
-        AppBarItem(
+          AppBarItem(
             image: "assets/icons/notification.svg",
             width: 12,
             height: 17,
-        ),
-           SizedBox(
+          ),
+          SizedBox(
             width: 5,
           ),
-        AppBarItem(
-          image: "assets/icons/search1.svg",
-          width: 14,
-          height: 18,
-        ),
-          SizedBox(width: 30,)
+          AppBarItem(
+            image: "assets/icons/qidirish.svg",
+            width: 14,
+            height: 18,
+          ),
+          SizedBox(
+            width: 30,
+          )
         ],
         centerTitle: true,
         backgroundColor: const Color(0xFF1C0F0D),
       ),
-      body: const Column(
+      body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          MainCategoryItem(image: "assets/seafood.png", text: "Seafood"),
+          CategoryItem(image: ("assets/seafood.png"), text: "Seafood"),
           SizedBox(
             height: 16,
           ),
@@ -96,47 +107,62 @@ class CategoryPage extends StatelessWidget {
           )
         ],
       ),
-      bottomNavigationBar:   Align(
+      bottomNavigationBar: Align(
         alignment: Alignment.bottomCenter,
         child: Container(
+          margin: const EdgeInsets.only(bottom: 30),
           width: 281,
           height: 56,
           decoration: BoxDecoration(
             color: Color(0xFFFD5D69),
-            borderRadius: BorderRadius.circular(30)
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: SvgPicture.asset("assets/icons/uycha.svg"),
+                onPressed: () {
+                  context.go("/page2");
+                },
+              ),
+              SvgPicture.asset("assets/icons/comment.svg"),
+              SvgPicture.asset("assets/icons/toplam.svg"),
+              SvgPicture.asset("assets/icons/odam.svg"),
+            ],
           ),
         ),
       ),
     );
   }
 }
+
 class AppBarItem extends StatelessWidget {
   const AppBarItem({super.key, required this.image, required this.width, required this.height});
+
   final String image;
   final double width, height;
-
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 28,
       height: 28,
-      decoration: BoxDecoration(
-        color: const Color(0xFFFFC6C9),
-        borderRadius: BorderRadius.circular(14)
-      ),
+      decoration:
+          BoxDecoration(color: const Color(0xFFFFC6C9), borderRadius: BorderRadius.circular(14)),
       child: Center(
         child: SizedBox(
           width: width,
           height: height,
-          child: SvgPicture.asset(image,
-          fit: BoxFit.cover,),
+          child: SvgPicture.asset(
+            image,
+            fit: BoxFit.cover,
+          ),
         ),
       ),
     );
   }
 }
-
 
 class CategoryItem extends StatelessWidget {
   const CategoryItem({super.key, required this.image, required this.text});
@@ -208,6 +234,63 @@ class MainCategoryItem extends StatelessWidget {
           ),
         )
       ],
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      extendBody: true,
+      backgroundColor: AppColors.backgound,
+      appBar: AppBar(
+        elevation: 0,
+        centerTitle: false,
+        backgroundColor: AppColors.backgound,
+        title: const AppbarTitle(),
+        actions: const [Appactions()],
+      ),
+      body: ScoffoldPage(),
+      bottomNavigationBar: const NavigationBarPage(),
+    );
+  }
+}
+
+class NavigationBarPage extends StatelessWidget {
+  const NavigationBarPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 30),
+      child: Align(
+        alignment: Alignment.bottomCenter,
+        child: Container(
+          width: 281,
+          height: 56,
+          decoration: BoxDecoration(
+            color: Color(0xFFFD5D69),
+            borderRadius: BorderRadius.circular(30),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: SvgPicture.asset("assets/icons/uycha.svg"),
+                onPressed: () {
+                  context.go("/");
+                },
+              ),
+              SvgPicture.asset("assets/icons/comment.svg"),
+              SvgPicture.asset("assets/icons/toplam.svg"),
+              SvgPicture.asset("assets/icons/odam.svg"),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }
